@@ -1,0 +1,27 @@
+services:
+  log-analyzer-api:
+    image: python:3.11-slim
+    container_name: log-analyzer-api
+    working_dir: /app
+    volumes:
+      - ./nginx_logs:/logs
+      - ./app:/app
+    command: ["sh", "-c", "pip install flask && python app.py"]
+    ports:
+      - "4100:4100"
+
+  target-web:
+    image: nginx:stable
+    container_name: target-web
+    volumes:
+      - ./nginx_logs:/var/log/nginx
+    ports:
+      - "8085:80"
+
+  attacker:
+    image: kalilinux/kali-rolling
+    container_name: attacker
+    tty: true
+    command: ["/bin/bash"]
+
+
